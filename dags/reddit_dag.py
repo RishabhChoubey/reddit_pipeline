@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pipelines.aws_s3_pipeline import upload_s3_pipeline
 from pipelines.reddit_pipeline import reddit_pipeline
+from pipelines.glue_trigger import trigger_glue_job
 
 default_args = {
     'owner': 'Rishabh choubey',
@@ -33,9 +34,9 @@ extract = PythonOperator(
     python_callable=reddit_pipeline,
     op_kwargs={
         'file_name': f'reddit_{file_postfix}',
-        'subreddit': 'dataengineering',
+        'subreddit': 'engineering',
         'time_filter': dt,
-        'limit': 100
+        'limit': 1000
     },
     dag=dag
 )
@@ -47,4 +48,14 @@ upload_s3 = PythonOperator(
     dag=dag
 )
 
-extract >> upload_s3
+trig_glue = PythonOperator(
+    task_id='trig_glue',
+    python_callable=trigger_glue_job,
+     op_kwargs={
+        'job_name': 'api_glue_process2',
+
+    },
+    dag=dag
+)
+
+extract >> upload_s3 >> trig_glue
