@@ -53,7 +53,6 @@ trig_glue = PythonOperator(
     python_callable=trigger_glue_job,
      op_kwargs={
         'job_name': 'api_glue_process2',
-
     },
     dag=dag
 )
