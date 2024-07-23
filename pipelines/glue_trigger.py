@@ -3,7 +3,7 @@ import time
 from utils.constants import AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY,AWS_REGION
 
 
-def trigger_glue_job(job_name):
+def trigger_glue_job(job_name:str):
 
     client = boto3.client(
             'glue',
